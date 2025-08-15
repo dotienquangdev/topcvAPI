@@ -1,5 +1,7 @@
+const mongoosePaginate = require("mongoose-paginate-v2");
 const mongoose = require("mongoose");
-//Thông tin công ty
+// import mongoose from 'mongoose';
+
 const companiesSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -48,5 +50,6 @@ const companiesSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+companiesSchema.plugin(mongoosePaginate);
 const Companies = mongoose.model("Companies", companiesSchema, "companies");
 module.exports = Companies;

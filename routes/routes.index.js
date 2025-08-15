@@ -5,6 +5,8 @@ const routeJobs = require("./routes.jobs");
 const routeCategories = require("./routes.categoriesJobs");
 const routeResumes = require("./routes.resumes");
 const routeEmployer = require("./routes.employer");
+const routeJobView = require("./routes.job_views");
+const routeUpload = require("./upload");
 
 module.exports = (app) => {
   app.use("/api/user", routeUser);
@@ -14,4 +16,6 @@ module.exports = (app) => {
   app.use("/api/resumes", routeResumes);
   app.use("/api/employers", routeEmployer);
   app.use("/api/categories", routeCategories);
+  app.use("/api/uploads", routeUpload);
+  app.use("/api/jobView", routeJobView);
 };

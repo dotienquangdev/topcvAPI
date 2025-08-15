@@ -1,31 +1,77 @@
 const Jobs = require("../models/jobs.models");
-
+const mongoose = require("mongoose");
 const getJobs = async (req, res) => {
-  const jobs = await Jobs.find({
-    deleted: false,
-    status: "active",
-  });
-  res.json({
-    jobs: jobs,
-  });
+  try {
+    const {
+      _page = 1,
+      _limit = 9,
+      _sort = "title",
+      _order = "asc",
+    } = req.query;
+    let params = [];
+    params.sortField = "title";
+    params.sortType = "asc";
+
+    const page = parseInt(_page);
+    const limit = parseInt(_limit);
+    const skip = (page - 1) * limit;
+    const sortOrder = _order === "asc" ? 1 : -1;
+
+    // Lấy danh sách jobs có phân trang, sắp xếp và populate
+    const jobs = await Jobs.find({
+      deleted: false,
+      status: "active",
+    })
+      .sort({ [_sort]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .populate("company_id")
+      .populate("category_id");
+
+    // Lấy tổng số lượng job để tính tổng số trang
+    const total = await Jobs.countDocuments({
+      deleted: false,
+      status: "active",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Lấy danh sách công việc thành công!",
+      docs: jobs,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error("Lỗi getJobs:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi máy chủ!",
+    });
+  }
 };
+
 const listJobs = async (req, res) => {
   try {
-    const jobsId = req.body._id;
-    console.log(jobsId);
+    const jobsId = req.params.id; // ✅ lấy từ params, không phải body
+    console.log("ID nhận được:", jobsId);
+
     if (!jobsId) {
       return res.status(400).json({
         success: false,
         message: "Thiếu ID jobs",
       });
     }
-    const jobs = await Jobs.findById(jobsId);
+
+    const jobs = await Jobs.findById(jobsId)
+      .populate("company_id")
+      .populate("category_id");
     if (!jobs) {
       return res.status(404).json({
         success: false,
         message: "Không tìm thấy jobs!",
       });
     }
+
     res.status(200).json({
       success: true,
       data: jobs,
@@ -35,6 +81,7 @@ const listJobs = async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi server!" });
   }
 };
+
 const postJobsApply = async (req, res) => {
   try {
     const {
@@ -52,8 +99,8 @@ const postJobsApply = async (req, res) => {
     if (
       !title ||
       !requirements ||
-      salary_min == null ||
-      salary_max == null ||
+      !salary_min ||
+      !salary_max ||
       !job_type ||
       !experience_level
     ) {
@@ -62,7 +109,7 @@ const postJobsApply = async (req, res) => {
         message: "Vui lòng nhập đầy đủ thông tin!",
       });
     }
-    if (salary_min < 0 || salary_max <= 0) {
+    if (salary_min < 0 || salary_max < 0) {
       return res.status(400).json({
         success: false,
         message: "Tiền lương phải lớn hơn 0!",
@@ -125,6 +172,35 @@ const postJobsApply = async (req, res) => {
     });
   }
 };
+
+const normalizeSalaryFields = async (req, res) => {
+  try {
+    const jobs = await Jobs.find({
+      salary_min: { $gt: 1000000 },
+    });
+
+    let count = 0;
+
+    for (const job of jobs) {
+      job.salary_min = Math.round(job.salary_min / 1_000_000);
+      job.salary_max = Math.round(job.salary_max / 1_000_000);
+      await job.save();
+      count++;
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `✅ Đã cập nhật ${count} job thành công.`,
+    });
+  } catch (error) {
+    console.error("❌ Lỗi cập nhật lương:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi khi cập nhật salary_min/salary_max",
+    });
+  }
+};
+
 const deleteJobs = async (req, res) => {
   try {
     const id = req.params.id;
@@ -149,6 +225,39 @@ const deleteJobs = async (req, res) => {
     console.error("Lỗi khi xóa Jobs", error);
   }
 };
+
+const editJobsApply = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "ID không hợp lệ" });
+    }
+    const updateData = { ...req.body };
+    // Nếu company_id là object => chỉ lấy _id
+    if (updateData.company_id?._id) {
+      updateData.company_id = updateData.company_id._id;
+    }
+    if (updateData.category_id?._id) {
+      updateData.category_id = updateData.category_id._id;
+    }
+    const updatedJob = await Jobs.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true },
+      { updated_at: new Date() }
+    );
+    if (!updatedJob) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy công việc để cập nhật" });
+    }
+    res.json({ updatedJob });
+    // console.log("Dữ liệu nhận được:", updatedJob);
+  } catch (error) {
+    console.error("Lỗi cập nhật công việc:", error);
+    return res.status(500).json({ message: "Lỗi server." });
+  }
+};
 const saveJob = async (req, res) => {};
 const savedJobs = async (req, res) => {};
 const suggestionsJobs = async (req, res) => {};
@@ -160,4 +269,6 @@ module.exports = {
   savedJobs,
   suggestionsJobs,
   deleteJobs,
+  normalizeSalaryFields,
+  editJobsApply,
 };

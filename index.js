@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const http = require("http"); // Đúng module HTTP
 const database = require("./config/database");
 const route = require("./routes/routes.index");
+const cors = require("cors");
 
 // Load biến môi trường từ .env
 dotenv.config();
@@ -36,7 +37,23 @@ app.use((req, res, next) => {
 
 // Kết nối database
 database.connect();
+const allowedOrigins = ["http://localhost:3002"];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
+// ... routes ở dưới
+const companyRoutes = require("./routes/routes.companies");
+app.use("/api/companies", companyRoutes);
 // Các routes
 route(app);
 

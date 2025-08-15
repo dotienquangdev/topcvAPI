@@ -15,3 +15,6 @@ const jobViewsSchema = new mongoose.Schema({
   created_at: Date,
   updated_at: Date,
 });
+
+const Jobviews = mongoose.model("Jobviews", jobViewsSchema, "job_views");
+module.exports = Jobviews;

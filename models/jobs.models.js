@@ -1,7 +1,16 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 //Thông tin bài đăng tuyển dụng
 const jobsSchema = new mongoose.Schema({
-  company_id: String,
+  company_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Companies",
+  },
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "JobCategories",
+  },
+
   title: String,
   description: String,
   requirements: String,
@@ -10,7 +19,6 @@ const jobsSchema = new mongoose.Schema({
   job_type: String,
   location: String,
   experience_level: String,
-  category_id: String,
   deadline: Date,
   created_at: Date,
   updated_at: Date,
@@ -23,6 +31,6 @@ const jobsSchema = new mongoose.Schema({
     default: false,
   },
 });
-
+jobsSchema.plugin(mongoosePaginate);
 const Jobs = mongoose.model("Jobs", jobsSchema, "jobs");
 module.exports = Jobs;

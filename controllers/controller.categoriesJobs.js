@@ -80,9 +80,45 @@ const deleteCategories = async (req, res) => {
   }
 };
 
+const updateCategories = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "ID không hợp lệ" });
+    }
+
+    const updateData = { ...req.body };
+
+    const updatedBy = {
+      account_id: res.locals.categories?.id || null,
+      update_at: new Date(),
+    };
+
+    const updatedCategories = await Categories.findByIdAndUpdate(
+      id,
+      {
+        $set: updateData,
+        $push: { updatedBy },
+      },
+      { new: true, runValidators: true } // ✅ Trả về document mới sau khi update
+    );
+
+    if (!updatedCategories) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy ngành nghề để cập nhật" });
+    }
+
+    res.json({ message: "Cập nhật thành công", updatedCategories });
+  } catch (error) {
+    console.error("Lỗi update categories:", error);
+    res.status(500).json({ message: "Cập nhật thất bại" });
+  }
+};
 module.exports = {
   deleteCategories,
   postCategories,
   listCategories,
   getCategories,
+  updateCategories,
 };
