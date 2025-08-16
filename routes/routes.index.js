@@ -9,7 +9,6 @@ const routeJobView = require("./routes.job_views");
 const routeUpload = require("./upload");
 
 module.exports = (app) => {
-  app.use("/api/user", routeUser);
   app.use("/api/companies", routeCompanies);
   app.use("/api/candidate", routeCandidate);
   app.use("/api/jobs", routeJobs);
@@ -18,4 +17,5 @@ module.exports = (app) => {
   app.use("/api/categories", routeCategories);
   app.use("/api/uploads", routeUpload);
   app.use("/api/jobView", routeJobView);
+  app.use("/api/user", routeUser);
 };

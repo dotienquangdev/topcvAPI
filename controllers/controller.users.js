@@ -73,6 +73,8 @@ const postLogin = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         tokenUser: user.tokenUser,
+        avatar_url: user.avatar_url,
+        phone: user.phone,
         level: user.level,
       },
     });
