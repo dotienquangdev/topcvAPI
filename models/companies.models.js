@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const companiesSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // nếu bạn có model User
+    ref: "User",
     required: true,
   },
   name: {
@@ -17,6 +17,7 @@ const companiesSchema = new mongoose.Schema({
     type: String,
     default: "", // hoặc null nếu bạn muốn cho phép không có logo
   },
+
   description: {
     type: String,
     default: "",
