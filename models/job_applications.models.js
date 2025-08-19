@@ -7,6 +7,9 @@ const jobApplicationsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Resumes",
   }, // CV nào (có thể null nếu nộp trực tiếp)
+
+  cv_file: String,
+
   cover_letter: String, // Thư xin việc
   viewed_at: { type: Date }, // Khi nhà tuyển dụng mở CV
   status: {
@@ -15,7 +18,6 @@ const jobApplicationsSchema = new mongoose.Schema({
     enum: ["pending", "viewed", "interview", "hired", "rejected"],
     default: "pending",
   },
-
   status: {
     type: String,
     default: "active",

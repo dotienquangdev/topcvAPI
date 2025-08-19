@@ -34,30 +34,36 @@ const listJobApplication = async (req, res) => {
 };
 const postJobApplication = async (req, res) => {
   try {
-    const { user_id, job_id, resume_id, cover_letter, company_id } = req.body;
+    const { user_id, job_id, resume_id, cover_letter } = req.body;
 
-    const application = new JobApplications({
+    // Kiểm tra có file upload không
+    let cvFilePath = null;
+    if (req.file) {
+      cvFilePath = "/uploads/cv/" + req.file.filename; // đường dẫn CV
+    }
+
+    const newApplication = new JobApplications({
       user_id,
       job_id,
       resume_id,
       cover_letter,
-      company_id,
+      cv_file: cvFilePath,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
-    await application.save();
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Ứng tuyển thành công!",
-        data: application,
-      });
+    await newApplication.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Ứng tuyển thành công!",
+      data: newApplication,
+    });
   } catch (error) {
     console.error("Lỗi postJobApplication:", error);
     res.status(500).json({ success: false, message: "Lỗi server!" });
   }
 };
-
 const patchJobApplication = async (req, res) => {
   try {
     const { id } = req.params;
@@ -76,13 +82,11 @@ const patchJobApplication = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Không tìm thấy ứng tuyển!" });
     }
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Cập nhật thành công!",
-        data: application,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật thành công!",
+      data: application,
+    });
   } catch (error) {
     console.error("Lỗi patchJobApplication:", error);
     res.status(500).json({ success: false, message: "Lỗi server!" });
@@ -111,10 +115,13 @@ const deleteJobApplication = async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi server!" });
   }
 };
+const uploadfile = async (req, res) => {};
+
 module.exports = {
   deleteJobApplication,
   patchJobApplication,
   postJobApplication,
   listJobApplication,
   getJobApplication,
+  uploadfile,
 };
