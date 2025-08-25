@@ -9,10 +9,11 @@ const jobApplicationsSchema = new mongoose.Schema({
   }, // CV nào (có thể null nếu nộp trực tiếp)
 
   cv_file: String,
+  cv_file_url: String,
 
   cover_letter: String, // Thư xin việc
   viewed_at: { type: Date }, // Khi nhà tuyển dụng mở CV
-  status: {
+  statusApplication: {
     type: String,
     enum: ["pending", "viewed", "interview", "hired", "rejected"],
     default: "pending",

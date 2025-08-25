@@ -1,16 +1,6 @@
 const multer = require("multer");
 const path = require("path");
-
-// Cấu hình nơi lưu file
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/cv"); // Thư mục lưu CV
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Tạo tên file unique
-  },
-});
+const fs = require("fs");
 
 // Giới hạn loại file (chỉ pdf/doc/docx)
 const fileFilter = (req, file, cb) => {
@@ -22,7 +12,30 @@ const fileFilter = (req, file, cb) => {
     cb(new Error("Chỉ cho phép file PDF/DOC/DOCX!"), false);
   }
 };
+// nơi lưu file
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let folder = "uploads/others";
 
+    if (file.fieldname === "cv_file") {
+      folder = "uploads/cv";
+    } else if (file.fieldname === "profile_pic") {
+      folder = "uploads/profile";
+    }
+
+    // đảm bảo folder tồn tại
+    fs.mkdirSync(folder, { recursive: true });
+    cb(null, folder);
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      Date.now() + "-" + file.fieldname + path.extname(file.originalname)
+    );
+  },
+});
+
+// Thêm fileFilter
 const upload = multer({ storage, fileFilter });
 
 module.exports = upload;

@@ -19,5 +19,5 @@ module.exports = (app) => {
   app.use("/api/uploads", routeUpload);
   app.use("/api/jobView", routeJobView);
   app.use("/api/user", routeUser);
-  app.use("/api/application", routeApplications);
+  app.use("/api/jobApplication", routeApplications);
 };

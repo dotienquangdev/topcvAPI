@@ -52,16 +52,14 @@ const getJobs = async (req, res) => {
 
 const listJobs = async (req, res) => {
   try {
-    const jobsId = req.params.id; // ✅ lấy từ params, không phải body
-    console.log("ID nhận được:", jobsId);
-
+    const jobsId = req.params.id;
+    // console.log("ID nhận được:", jobsId);
     if (!jobsId) {
       return res.status(400).json({
         success: false,
         message: "Thiếu ID jobs",
       });
     }
-
     const jobs = await Jobs.findById(jobsId)
       .populate("company_id")
       .populate("category_id");

@@ -6,10 +6,9 @@ const http = require("http"); // Đúng module HTTP
 const database = require("./config/database");
 const route = require("./routes/routes.index");
 const cors = require("cors");
-
+const path = require("path");
 // Load biến môi trường từ .env
 dotenv.config();
-
 // Khởi tạo app
 const app = express();
 const server = http.createServer(app);
@@ -27,14 +26,12 @@ app.use(
   })
 );
 app.use(flash());
-
 // Middleware gán flash message vào res.locals
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
 });
-
 // Kết nối database
 database.connect();
 const allowedOrigins = ["http://localhost:3002"];
@@ -50,11 +47,15 @@ app.use(
     credentials: true,
   })
 );
+// Cho phép truy cập folder uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ... routes ở dưới
 const companyRoutes = require("./routes/routes.companies");
 app.use("/api/companies", companyRoutes);
-// Các routes
+// Các
+
+// Routes
 route(app);
 
 // Cấu hình view engine (nếu dùng)
