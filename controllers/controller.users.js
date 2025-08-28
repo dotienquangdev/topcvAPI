@@ -12,16 +12,30 @@ const register = async (req, res) => {
     phone: req.body.phone,
   });
 
+  if (!req.body.phone) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Phone không được để trống!" });
+  }
+  if (!req.body.email) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email không được để trống!" });
+  }
+  // console.log("exitPhone:", req.body.phone);
+  // console.log("exitEmail:", req.body.email);
   if (exitEmail) {
     return res
       .status(400)
       .json({ success: false, message: "Email đã tồn tại!" });
   }
+
   if (exitPhone) {
     return res
       .status(400)
       .json({ success: false, message: "Phone đã tồn tại!" });
   }
+
   // Mã hóa mật khẩu trước khi lưu
   const hashedPassword = md5(req.body.password);
   const user = new User({
@@ -37,6 +51,7 @@ const register = async (req, res) => {
     user: {
       _id: user._id,
       fullNameL: user.fullName,
+      phone: user.phone,
       email: user.email,
       level: user.level,
       tokenUser: user.tokenUser,
@@ -192,6 +207,7 @@ const userResetPassword = async (req, res) => {
         message: "Token user không hợp lệ hoặc người dùng không tồn tại!",
       });
     }
+
     const handlePassword = md5(password);
     const result = await User.updateOne(
       { email, tokenUser },
