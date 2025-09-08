@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 //Kỹ năng (dùng để gắn vào CV hoặc yêu cầu công việc)
 const skillsSchema = new mongoose.Schema({
-  name: String,
+  name: String, // tên công việc
   status: {
     type: String,
     default: "active",

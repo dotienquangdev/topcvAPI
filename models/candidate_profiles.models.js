@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
-
 const candidateProfilesSchema = new mongoose.Schema({
-  user_id: String,
-  headline: String,
-  summary: String,
-  dob: Date,
-  address: String,
-  gender: String,
+  // ứng vuên
+  user_id: String, // userID ứng viên
+  headline: String, // tiêu đề
+  summary: String, // bản tóm tắt
+  dob: Date, // ngày sinh
+  address: String, // địa chỉ
+  gender: String, // giới tính
   status: {
+    // Trạng thái
     type: String,
     default: "active",
   },
@@ -18,11 +19,9 @@ const candidateProfilesSchema = new mongoose.Schema({
   created_at: Date,
   updated_at: Date,
 });
-
 const CandidateProfiles = mongoose.model(
   "CandidateProfiles",
   candidateProfilesSchema,
   "candidate_profiles" // optional: nếu bạn muốn fix tên collection
 );
-
 module.exports = CandidateProfiles;

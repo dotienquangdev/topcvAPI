@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 //Thông tin người dùng (ứng viên, nhà tuyển dụng)
 const usersSchema = new mongoose.Schema({
-  fullName: String,
-  email: String,
-  tokenUser: String,
-  password: String,
-  phone: String,
-  level: Number,
-  avatar_url: String,
+  fullName: String, // hộ têm
+  email: String, // email
+  tokenUser: String, // token
+  password: String, // mật khẩu
+  phone: String, // sdt
+  level: Number, // cấp độ
+  avatar_url: String, // ảnh
   status: {
     type: String,
     default: "active",

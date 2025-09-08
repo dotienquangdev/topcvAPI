@@ -1,5 +1,6 @@
 const Jobs = require("../models/jobs.models");
 const mongoose = require("mongoose");
+
 const getJobs = async (req, res) => {
   try {
     const {
@@ -8,6 +9,72 @@ const getJobs = async (req, res) => {
       _sort = "title",
       _order = "asc",
     } = req.query;
+
+    const page = parseInt(_page);
+    const limit = parseInt(_limit);
+    const skip = (page - 1) * limit;
+    const sortOrder = _order === "asc" ? 1 : -1;
+
+    // Lấy jobs có phân trang + populate company & category
+    let jobs = await Jobs.find({
+      deleted: false,
+      status: "active",
+    })
+      .populate({
+        path: "company_id",
+        match: { deleted: false, status: "active" }, // chỉ lấy công ty active
+      })
+      .populate("category_id")
+      .sort({ [_sort]: sortOrder })
+      .skip(skip)
+      .limit(limit);
+
+    // Lọc bỏ job không có company hợp lệ
+    jobs = jobs.filter((job) => job.company_id);
+
+    // Lấy tổng số lượng job (công ty phải active)
+    const total = (await Jobs.countDocuments({
+      deleted: false,
+      status: "active",
+    }).populate)
+      ? undefined
+      : await Jobs.find({
+          deleted: false,
+          status: "active",
+        })
+          .populate({
+            path: "company_id",
+            match: { deleted: false, status: "active" },
+          })
+          .then((data) => data.filter((job) => job.company_id).length);
+
+    res.status(200).json({
+      success: true,
+      message: "Lấy danh sách công việc thành công!",
+      docs: jobs,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error("Lỗi getJobs:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi máy chủ!",
+    });
+  }
+};
+
+const a = 10;
+
+const getJobs1 = async (req, res) => {
+  try {
+    const {
+      _page = 1,
+      _limit = 9,
+      _sort = "title",
+      _order = "asc",
+    } = req.query;
+
     let params = [];
     params.sortField = "title";
     params.sortType = "asc";

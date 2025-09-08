@@ -100,13 +100,10 @@ const listJobApplication = async (req, res) => {
 const postJobApplication = async (req, res) => {
   try {
     const { user_id, job_id, cover_letter } = req.body;
-
     console.log("Body:", req.body);
     console.log("File:", req.file);
-
     let cvFilePath = null;
     let cvFileUrl = null;
-
     if (req.file) {
       cvFilePath = "/uploads/cv/" + req.file.filename;
       cvFileUrl = `${BASE_URL}${cvFilePath}`; // Tạo URL đầy đủ

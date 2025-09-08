@@ -7,4 +7,6 @@ router.post("/postCompanies", controller.applyCompanies); // Dành cho admin, nh
 router.get("/getCompanies", controller.getCompanies); //Danh sách công ty
 router.patch("/putCompanies/:id", controller.updateCompanies); // Dành cho admin, nhà tuyển dụng tạo công ty
 router.delete("/deleteCompanies/:id", controller.deleteCompanies); // Xóa công việc
+// router.patch("/updateAllCompaniesStatus", controller.updateAllCompaniesStatus);
+
 module.exports = router;

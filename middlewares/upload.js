@@ -4,12 +4,12 @@ const fs = require("fs");
 
 // Giới hạn loại file (chỉ pdf/doc/docx)
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = [".pdf", ".doc", ".docx"];
+  const allowedTypes = [".pdf", ".doc", ".docx", ".mp3"];
   const ext = path.extname(file.originalname).toLowerCase();
   if (allowedTypes.includes(ext)) {
     cb(null, true);
   } else {
-    cb(new Error("Chỉ cho phép file PDF/DOC/DOCX!"), false);
+    cb(new Error("Chỉ cho phép file PDF/DOC/DOCX/MP3!"), false);
   }
 };
 // nơi lưu file

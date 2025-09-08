@@ -141,6 +141,19 @@ const deleteCompanies = async (req, res) => {
     console.error("Lỗi khi xóa Jobs", error);
   }
 };
+
+// const updateAllCompaniesStatus = async () => {
+//   try {
+//     const result = await Companies.updateMany(
+//       {}, // không điều kiện -> áp dụng cho tất cả
+//       { $set: { status: "active" } }
+//     );
+//     console.log("Kết quả cập nhật:", result);
+//   } catch (error) {
+//     console.error("Lỗi cập nhật status:", error);
+//   }
+// };
+
 module.exports = {
   getCompanies,
   listJobsCompanies,

@@ -8,6 +8,7 @@ const routeEmployer = require("./routes.employer");
 const routeJobView = require("./routes.job_views");
 const routeUpload = require("./upload");
 const routeApplications = require("./routes.JobApplications");
+const routeWorkExprerience = require("./routes.work_exprerience");
 
 module.exports = (app) => {
   app.use("/api/companies", routeCompanies);
@@ -20,4 +21,5 @@ module.exports = (app) => {
   app.use("/api/jobView", routeJobView);
   app.use("/api/user", routeUser);
   app.use("/api/jobApplication", routeApplications);
+  app.use("api/workExprerience", routeWorkExprerience);
 };

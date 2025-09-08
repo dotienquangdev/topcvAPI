@@ -4,9 +4,10 @@ const { create } = require("./users.model");
 const resumesSchema = new mongoose.Schema({
   user_id: String,
   file_url: String, // Link tải file
-  title: String,
-  is_default: Boolean,
+  title: String, // tên ứng viên
+  is_default: Boolean, // mặc định
   status: {
+    // trạng thái
     type: String,
     default: "active",
   },
