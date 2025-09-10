@@ -8,7 +8,10 @@ const routeEmployer = require("./routes.employer");
 const routeJobView = require("./routes.job_views");
 const routeUpload = require("./upload");
 const routeApplications = require("./routes.JobApplications");
-const routeWorkExprerience = require("./routes.work_exprerience");
+const routeWorkExperience = require("./routes.work_experience");
+const routeFormWork = require("./routes.formWork");
+const routeSkills = require("./routes.skill");
+const routeExperienceLevel = require("./routes.experienceLevel");
 
 module.exports = (app) => {
   app.use("/api/companies", routeCompanies);
@@ -21,5 +24,8 @@ module.exports = (app) => {
   app.use("/api/jobView", routeJobView);
   app.use("/api/user", routeUser);
   app.use("/api/jobApplication", routeApplications);
-  app.use("api/workExprerience", routeWorkExprerience);
+  app.use("/api/workExperience", routeWorkExperience);
+  app.use("/api/formWork", routeFormWork);
+  app.use("/api/skill", routeSkills);
+  app.use("/api/experienceLevel", routeExperienceLevel);
 };

@@ -142,17 +142,22 @@ const deleteCompanies = async (req, res) => {
   }
 };
 
-// const updateAllCompaniesStatus = async () => {
-//   try {
-//     const result = await Companies.updateMany(
-//       {}, // không điều kiện -> áp dụng cho tất cả
-//       { $set: { status: "active" } }
-//     );
-//     console.log("Kết quả cập nhật:", result);
-//   } catch (error) {
-//     console.error("Lỗi cập nhật status:", error);
-//   }
-// };
+const updateAllCompaniesStatus = async () => {
+  try {
+    const result = await Companies.updateMany(
+      {}, // không điều kiện -> áp dụng cho tất cả
+      {
+        $set: {
+          companies_Phone:
+            "[Phát triển phần mềm, thực hiện kiểm thử nội bộ, viết tài liệu kỹ thuật và triển khai ứng dụng trên các môi trường khác nhau Phân tích nguyên nhân sự cố, tối ưu từ người dùng hoặc các ứng dụng tích hợp của đối tác, đề xuất phương án xử lý tối ưu.Tham gia phân tích, thiết kế và đưa ra giải pháp kỹ thuật dựa trên tài liệu yêu cầu nghiệp vụ.Xác định và rà soát các vấn đề thường xuyên phát sinh lỗi, xây dựng phương án khắc phục triệt để và giám sát thực thi.Phối hợp với các thành viên trong đội dự án (BA, QA, DevOps, Product Owner,...) để hoàn thiện sản phẩm. Nghiên cứu nâng cấp bản thân để cập nhật các công nghệ, thiết kế mới]",
+        },
+      }
+    );
+    console.log("Kết quả cập nhật:", result);
+  } catch (error) {
+    console.error("Lỗi cập nhật status:", error);
+  }
+};
 
 module.exports = {
   getCompanies,
@@ -160,4 +165,5 @@ module.exports = {
   applyCompanies,
   updateCompanies,
   deleteCompanies,
+  updateAllCompaniesStatus,
 };

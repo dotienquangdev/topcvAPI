@@ -32,6 +32,7 @@ const companiesSchema = new mongoose.Schema({
   },
   // Mã số thuế
   tax_code: String, // mã số thuế
+  companies_Phone: String, // mã số thuế
   // vị trí công ty, địa chỉ
   location: {
     type: String,

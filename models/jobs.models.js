@@ -1,36 +1,52 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
-//Thông tin bài đăng tuyển dụng
+// Thông tin bài đăng tuyển dụng
 const jobsSchema = new mongoose.Schema({
   company_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Companies",
+    required: true,
   },
   category_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "JobCategories",
+    required: true,
   },
-  title: String, // tiêu đề công việc
-  description: String, // mô tả công viêc
-  requirements: String, //yêu cầu công việc
+  formWork_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Formwork", // phải trùng tên model
+  },
+  workExperience_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "WorkExperience",
+  },
+  experience_level_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ExperienceLevel",
+  },
+  // cấp bậc (Nhân viên, Trưởng phòng, Giám đốc)
+  title: { type: String, required: true }, // tiêu đề công việc
+  description: { type: String, required: true }, // mô tả công việc
+  requirements: String, // yêu cầu công việc
   benefits: String, // lợi ích công việc
   salary_min: Number, // lương tối thiểu
   salary_max: Number, // lương tối đa
-  job_type: String, // hình thức làm việc full-time, part-time, Remote
-  location: String, //vị trí địa chỉ
-  experience_level: String, //cấp độ kinh nghiệm, nhân viên, trưởng phòng ,dám đốc
-  deadline: Date, // hạn ngày hết hạn
-  created_at: Date, // ngày tạo công việc
-  updated_at: Date, // ngày cập nhật công việc
-  work_experience: Number,
+  location: String, // địa điểm làm việc
+  deadline: Date, // hạn nộp hồ sơ
+  job_benefits: String, // phúc lợi bổ sung
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
   outstanding: {
-    // nổi bật, mặc định không chọn sẽ là job bình thường
     type: String,
     default: "normal",
   },
-  // Công nghệ thông tin, Bất động sản, Kinh tế, Luật
   status: {
-    // trạng thái
     type: String,
     default: "active",
   },

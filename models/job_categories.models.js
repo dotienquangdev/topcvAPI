@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-//Danh mục ngành nghề
+
+// Danh mục ngành nghề
 const jobCategoriesSchema = new mongoose.Schema({
-  name: String, // tên ngàng nghề
+  name: String, // tên ngành nghề
   slug: String, // Slug
   status: {
-    // Trạng thái
     type: String,
     default: "active",
   },
@@ -12,9 +12,16 @@ const jobCategoriesSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  created_at: Date, // ngày tạo
-  updated_at: Date, //ngày cập nhật
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
 });
+
 const JobCategories = mongoose.model(
   "JobCategories",
   jobCategoriesSchema,

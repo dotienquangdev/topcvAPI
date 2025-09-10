@@ -1,7 +1,14 @@
 const mongoose = require("mongoose");
-//Kỹ năng (dùng để gắn vào CV hoặc yêu cầu công việc)
+
+// Kỹ năng
 const skillsSchema = new mongoose.Schema({
-  name: String, // tên công việc
+  name: String, // tên kỹ năng
+  slug: String,
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "JobCategories", // Liên kết tới ngành nghề
+    required: true,
+  },
   status: {
     type: String,
     default: "active",
@@ -10,8 +17,14 @@ const skillsSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  created_at: Date,
-  updated_at: Date,
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Skills = mongoose.model("Skills", skillsSchema, "skills");

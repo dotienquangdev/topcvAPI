@@ -1,24 +1,38 @@
 const mongoosePaginate = require("mongoose-paginate-v2");
 const mongoose = require("mongoose");
-// import mongoose from 'mongoose';
 
 const workExperienceSchema = new mongoose.Schema({
-  //kinh nghiệm làm việc
-  workExperienceName: Number, // 0 năm, 1 năm, 2 năm, 3 năm
-  workExperienceSlug: String, //
+  // số năm kinh nghiệm
+  years: {
+    type: Number, // 0, 1, 2, 3...
+    required: true,
+  },
+  label: {
+    type: String, // "Không có kinh nghiệm", "1 năm", "2 năm", "3 năm"
+    required: true,
+  },
   deleted: {
     type: Boolean,
     default: false,
   },
-  update_at: {
+  status: {
+    type: String,
+    default: "active",
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
     type: Date,
     default: Date.now,
   },
 });
+
 workExperienceSchema.plugin(mongoosePaginate);
-const workExperience = mongoose.model(
+const WorkExperience = mongoose.model(
   "WorkExperience",
   workExperienceSchema,
   "workExperience"
 );
-module.exports = workExperience;
+module.exports = WorkExperience;

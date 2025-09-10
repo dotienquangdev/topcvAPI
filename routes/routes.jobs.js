@@ -14,4 +14,6 @@ router.get("/saved", controller.savedJobs); // Lấy danh sách công việc đ�
 router.get("/suggestions", controller.suggestionsJobs); // Gợi ý công việc
 router.put("/normalizeSalaryFields", controller.normalizeSalaryFields); // Gợi ý công việc
 
+router.patch("/updateAllJobsStatus", controller.updateAllJobsStatus);
+
 module.exports = router;

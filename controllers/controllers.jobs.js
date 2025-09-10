@@ -5,10 +5,13 @@ const getJobs = async (req, res) => {
   try {
     const {
       _page = 1,
-      _limit = 9,
+      _limit = 100,
       _sort = "title",
       _order = "asc",
     } = req.query;
+    let params = [];
+    params.sortField = "title";
+    params.sortType = "asc";
 
     const page = parseInt(_page);
     const limit = parseInt(_limit);
@@ -22,9 +25,21 @@ const getJobs = async (req, res) => {
     })
       .populate({
         path: "company_id",
-        match: { deleted: false, status: "active" }, // chỉ lấy công ty active
+        match: {
+          deleted: false,
+          status: "active",
+        }, // chỉ lấy công ty active
       })
-      .populate("category_id")
+      .populate({
+        path: "category_id",
+        match: {
+          deleted: false,
+          status: "active",
+        },
+      })
+      .populate("formWork_id")
+      .populate("workExperience_id")
+      .populate("experience_level_id")
       .sort({ [_sort]: sortOrder })
       .skip(skip)
       .limit(limit);
@@ -33,20 +48,21 @@ const getJobs = async (req, res) => {
     jobs = jobs.filter((job) => job.company_id);
 
     // Lấy tổng số lượng job (công ty phải active)
-    const total = (await Jobs.countDocuments({
+    const total = await Jobs.countDocuments({
       deleted: false,
       status: "active",
-    }).populate)
-      ? undefined
-      : await Jobs.find({
-          deleted: false,
-          status: "active",
-        })
-          .populate({
-            path: "company_id",
-            match: { deleted: false, status: "active" },
-          })
-          .then((data) => data.filter((job) => job.company_id).length);
+    });
+    // .populate)
+    //   ? undefined
+    //   : await Jobs.find({
+    //       deleted: false,
+    //       status: "active",
+    //     })
+    //       .populate({
+    //         path: "company_id",
+    //         match: { deleted: false, status: "active" },
+    //       })
+    //       .then((data) => data.filter((job) => job.company_id).length);
 
     res.status(200).json({
       success: true,
@@ -151,82 +167,116 @@ const postJobsApply = async (req, res) => {
   try {
     const {
       title,
+      description, // 👈 thêm vào
       requirements,
       salary_min,
       salary_max,
-      job_type,
-      experience_level,
+      formWork_id,
+      workExperience_id,
+      experience_level_id,
       location,
       company_id,
       category_id,
       deadline,
+      skills,
+      job_benefits,
     } = req.body;
+
+    // Validation
     if (
-      !title ||
-      !requirements ||
-      !salary_min ||
-      !salary_max ||
-      !job_type ||
-      !experience_level
+      !title?.trim() ||
+      !description?.trim() || // 👈 check luôn description
+      !requirements?.trim() ||
+      salary_min === undefined ||
+      salary_max === undefined ||
+      !formWork_id ||
+      !workExperience_id ||
+      !experience_level_id ||
+      !location?.trim() ||
+      !company_id ||
+      !category_id ||
+      !job_benefits
     ) {
       return res.status(400).json({
         success: false,
         message: "Vui lòng nhập đầy đủ thông tin!",
       });
     }
+
     if (salary_min < 0 || salary_max < 0) {
       return res.status(400).json({
         success: false,
-        message: "Tiền lương phải lớn hơn 0!",
+        message: "Tiền lương phải lớn hơn hoặc bằng 0!",
       });
     }
-    if (salary_min > salary_max) {
+    if (salary_min >= salary_max) {
       return res.status(400).json({
         success: false,
-        message: "Tiền lương max phải lớn hơn min!",
+        message: "Tiền lương tối đa phải lớn hơn lương tối thiểu!",
       });
     }
+    // Kiểm tra trùng lặp
     const existingJob = await Jobs.findOne({
       title,
-      requirements,
+      company_id,
+      location,
+      formWork_id,
+      workExperience_id,
+      experience_level_id,
+      category_id,
       salary_min,
       salary_max,
-      job_type,
-      experience_level,
     });
+
     if (existingJob) {
       return res.status(409).json({
         success: false,
         message: "Công việc này đã tồn tại!",
       });
     }
+    // Tạo job mới
     const newJob = new Jobs({
       title,
+      description, // 👈 truyền vào DB
       requirements,
       salary_min: parseInt(salary_min),
       salary_max: parseInt(salary_max),
-      job_type,
-      experience_level,
+      formWork_id,
+      workExperience_id,
+      experience_level_id,
       location,
       company_id,
       category_id,
       deadline,
+      job_benefits,
+      skills: skills || [],
+      status: "active",
+      deleted: false,
       created_at: new Date(),
       updated_at: new Date(),
     });
+
     await newJob.save();
+
     return res.status(201).json({
       success: true,
       message: "Tạo công việc mới thành công!",
-      jobs: {
+      job: {
         _id: newJob._id,
         title: newJob.title,
+        description: newJob.description,
         requirements: newJob.requirements,
         salary_min: newJob.salary_min,
         salary_max: newJob.salary_max,
-        job_type: newJob.job_type,
-        experience_level: newJob.experience_level,
+        formWork_id: newJob.formWork_id,
+        workExperience_id: newJob.workExperience_id,
+        experience_level_id: newJob.experience_level_id,
         location: newJob.location,
+        company_id: newJob.company_id,
+        category_id: newJob.category_id,
+        skills: newJob.skills,
+        deadline: newJob.deadline,
+        job_benefits: newJob.job_benefits,
       },
     });
   } catch (error) {
@@ -326,6 +376,32 @@ const editJobsApply = async (req, res) => {
 const saveJob = async (req, res) => {};
 const savedJobs = async (req, res) => {};
 const suggestionsJobs = async (req, res) => {};
+
+const updateAllJobsStatus = async () => {
+  try {
+    const result = await Jobs.updateMany(
+      {}, // không điều kiện -> áp dụng cho tất cả
+      {
+        $set: {
+          job_benefits: `
+          Gói thu nhập đến 16 tháng lương/ năm.
+          Xét tăng lương theo năng lực và kết quả công việc định kỳ 1 lần/ năm hoặc tăng lương đột xuất theo hiệu quả công việc
+          Chế độ Bảo hiểm sức khỏe cho bản thân và người nhà
+          Nghỉ thứ Bảy, Chủ nhật hàng tuần
+          Du lịch, Teambuilding/ dã ngoại định kỳ hàng năm
+          Chế độ mừng sinh con, quà nhân ngày Lễ/ Tết, quà ngày truyền thống và các chế độ phúc lợi khác
+          Tham gia các khóa đào tạo chuyên môn, nâng cao kỹ năng thực hiện công việc, kỹ năng mềm và thi các chứng chỉ CNTT Quốc tế miễn phí tại Công ty
+          Được tham gia các chương trình đào tạo trước khi bắt đầu công việc và trong quá trình làm việc theo yêu cầu công việc
+          Chính sách phát triển, thăng tiến có lộ trình theo từng vị trí, từng phòng ban
+            `,
+        },
+      }
+    );
+    console.log("Kết quả cập nhật:", result);
+  } catch (error) {
+    console.error("Lỗi cập nhật status:", error);
+  }
+};
 module.exports = {
   getJobs,
   listJobs,
@@ -336,4 +412,5 @@ module.exports = {
   deleteJobs,
   normalizeSalaryFields,
   editJobsApply,
+  updateAllJobsStatus,
 };
