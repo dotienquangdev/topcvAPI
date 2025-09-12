@@ -11,5 +11,5 @@ router.put("/profile ", controllerUsers.updateLogin); //Cập nhật hồ sơ
 router.post("/forgot", controllerUsers.userForgot);
 router.post("/otp", controllerUsers.userOtp);
 router.post("/resetPassword", controllerUsers.userResetPassword);
-
+router.patch("/updateUserMoney", controllerUsers.updateUserMoney);
 module.exports = router;

@@ -1,4 +1,5 @@
 const Jobs = require("../models/jobs.models");
+const Formwork = require("../models/form_work.models");
 const mongoose = require("mongoose");
 
 const getJobs = async (req, res) => {
@@ -37,86 +38,36 @@ const getJobs = async (req, res) => {
           status: "active",
         },
       })
-      .populate("formWork_id")
-      .populate("workExperience_id")
-      .populate("experience_level_id")
+      .populate({
+        path: "formWork_id",
+        match: { deleted: false, status: "active" },
+      })
+      .populate({
+        path: "workExperience_id",
+        match: { deleted: false, status: "active" },
+      })
+      .populate({
+        path: "experience_level_id",
+        match: { deleted: false, status: "active" },
+      })
       .sort({ [_sort]: sortOrder })
       .skip(skip)
       .limit(limit);
 
     // Lọc bỏ job không có company hợp lệ
     jobs = jobs.filter((job) => job.company_id);
+    const job = await Jobs.findOne({ _id: "68c1b2cfeed717b51ee90b09" })
+      .populate("formWork_id") // <- populate formWork
+      .populate("company_id")
+      .populate("category_id");
+
+    console.log(job);
 
     // Lấy tổng số lượng job (công ty phải active)
     const total = await Jobs.countDocuments({
       deleted: false,
       status: "active",
     });
-    // .populate)
-    //   ? undefined
-    //   : await Jobs.find({
-    //       deleted: false,
-    //       status: "active",
-    //     })
-    //       .populate({
-    //         path: "company_id",
-    //         match: { deleted: false, status: "active" },
-    //       })
-    //       .then((data) => data.filter((job) => job.company_id).length);
-
-    res.status(200).json({
-      success: true,
-      message: "Lấy danh sách công việc thành công!",
-      docs: jobs,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-    });
-  } catch (error) {
-    console.error("Lỗi getJobs:", error);
-    res.status(500).json({
-      success: false,
-      message: "Lỗi máy chủ!",
-    });
-  }
-};
-
-const a = 10;
-
-const getJobs1 = async (req, res) => {
-  try {
-    const {
-      _page = 1,
-      _limit = 9,
-      _sort = "title",
-      _order = "asc",
-    } = req.query;
-
-    let params = [];
-    params.sortField = "title";
-    params.sortType = "asc";
-
-    const page = parseInt(_page);
-    const limit = parseInt(_limit);
-    const skip = (page - 1) * limit;
-    const sortOrder = _order === "asc" ? 1 : -1;
-
-    // Lấy danh sách jobs có phân trang, sắp xếp và populate
-    const jobs = await Jobs.find({
-      deleted: false,
-      status: "active",
-    })
-      .sort({ [_sort]: sortOrder })
-      .skip(skip)
-      .limit(limit)
-      .populate("company_id")
-      .populate("category_id");
-
-    // Lấy tổng số lượng job để tính tổng số trang
-    const total = await Jobs.countDocuments({
-      deleted: false,
-      status: "active",
-    });
-
     res.status(200).json({
       success: true,
       message: "Lấy danh sách công việc thành công!",
@@ -145,7 +96,10 @@ const listJobs = async (req, res) => {
     }
     const jobs = await Jobs.findById(jobsId)
       .populate("company_id")
-      .populate("category_id");
+      .populate("category_id")
+      .populate("formWork_id")
+      .populate("workExperience_id")
+      .populate("experience_level_id");
     if (!jobs) {
       return res.status(404).json({
         success: false,

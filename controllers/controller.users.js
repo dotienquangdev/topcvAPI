@@ -287,6 +287,20 @@ const updateLogin = async (req, res) => {
   }
   res.redirect("back");
 };
+
+const updateUserMoney = async () => {
+  try {
+    const result = await User.updateMany(
+      {}, // không có điều kiện => tất cả user
+      {
+        $set: { money: 2000 },
+      }
+    );
+    console.log("Kết quả cập nhật:", result);
+  } catch (error) {
+    console.error("Lỗi cập nhật money:", error);
+  }
+};
 module.exports = {
   register,
   postLogin,
@@ -297,4 +311,5 @@ module.exports = {
   userResetPassword,
   userOtp,
   userForgot,
+  updateUserMoney,
 };

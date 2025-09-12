@@ -8,6 +8,10 @@ const usersSchema = new mongoose.Schema({
   phone: String, // sdt
   level: Number, // cấp độ
   avatar_url: String, // ảnh
+  money: {
+    type: Number,
+    default: 0,
+  },
   status: {
     type: String,
     default: "active",

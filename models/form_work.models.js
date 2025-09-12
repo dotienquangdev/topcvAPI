@@ -16,7 +16,7 @@ const formWorkSchema = new mongoose.Schema({
     type: String,
     default: "active",
   },
-  update_at: {
+  updated_at: {
     type: Date,
     default: Date.now,
   },

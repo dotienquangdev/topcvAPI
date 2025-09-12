@@ -1,11 +1,20 @@
 const mongoose = require("mongoose");
 //Thông tin ứng tuyển của ứng viên vào các việc làm
 const jobApplicationsSchema = new mongoose.Schema({
-  user_id: String, // Ai nộp
-  job_id: String, // Công việc nào, công ty nào,
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
+    required: true,
+  }, // Ai nộp
+  job_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Jobs",
+    required: true,
+  }, // Công việc nào, công ty nào,
   resume_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Resumes",
+    required: true,
   }, // CV nào (có thể null nếu nộp trực tiếp)
 
   cv_file: String, // File

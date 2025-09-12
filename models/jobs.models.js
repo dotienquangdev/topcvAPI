@@ -14,19 +14,22 @@ const jobsSchema = new mongoose.Schema({
   },
   formWork_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Formwork", // phải trùng tên model
+    ref: "Formwork", // ✅ trùng với model Formwork
+    required: true,
   },
   workExperience_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "WorkExperience",
+    ref: "WorkExperience", // ✅ trùng với model WorkExperience
+    required: true,
   },
   experience_level_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "ExperienceLevel",
+    ref: "ExperienceLevel", // ✅ trùng với model ExperienceLevel
+    required: true,
   },
-  // cấp bậc (Nhân viên, Trưởng phòng, Giám đốc)
-  title: { type: String, required: true }, // tiêu đề công việc
-  description: { type: String, required: true }, // mô tả công việc
+
+  title: String, // tiêu đề công việc
+  description: String, // mô tả công việc
   requirements: String, // yêu cầu công việc
   benefits: String, // lợi ích công việc
   salary_min: Number, // lương tối thiểu
