@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const JobApplications = require("../models/job_applications.models");
 const BASE_URL = process.env.BASE_URL || "http://localhost:9000";
-
 const getJobApplication = async (req, res) => {
   try {
     const applications = await JobApplications.find({
@@ -50,7 +49,6 @@ const getJobApplication = async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi server!" });
   }
 };
-
 const listJobApplication = async (req, res) => {
   try {
     const { id } = req.params; // lấy id từ URL
@@ -89,19 +87,16 @@ const listJobApplication = async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi server!" });
   }
 };
-
 const postJobApplication = async (req, res) => {
   try {
     const { user_id, job_id, cover_letter } = req.body;
-    console.log("Body:", req.body);
-    console.log("File:", req.file);
+    b;
     let cvFilePath = null;
     let cvFileUrl = null;
     if (req.file) {
       cvFilePath = "/uploads/cv/" + req.file.filename;
       cvFileUrl = `${BASE_URL}${cvFilePath}`; // Tạo URL đầy đủ
     }
-
     const newApplication = new JobApplications({
       user_id,
       job_id,
@@ -115,9 +110,7 @@ const postJobApplication = async (req, res) => {
       created_at: new Date(),
       updated_at: new Date(),
     });
-
     await newApplication.save();
-
     res.status(201).json({
       success: true,
       message: "Ứng tuyển thành công!",
@@ -128,7 +121,6 @@ const postJobApplication = async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi server!" });
   }
 };
-
 const patchJobApplication = async (req, res) => {
   try {
     const { id } = req.params;
@@ -180,8 +172,6 @@ const deleteJobApplication = async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi server!" });
   }
 };
-// controllers/controller.JobApplications.js
-
 const uploadfile = async (req, res) => {
   try {
     console.log("Body:", req.body);

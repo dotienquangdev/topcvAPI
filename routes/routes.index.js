@@ -12,6 +12,7 @@ const routeWorkExperience = require("./routes.work_experience");
 const routeFormWork = require("./routes.formWork");
 const routeSkills = require("./routes.skill");
 const routeExperienceLevel = require("./routes.experienceLevel");
+const routeVnpay = require("./routes.vnpay");
 
 module.exports = (app) => {
   app.use("/api/companies", routeCompanies);
@@ -28,4 +29,5 @@ module.exports = (app) => {
   app.use("/api/formWork", routeFormWork);
   app.use("/api/skill", routeSkills);
   app.use("/api/experienceLevel", routeExperienceLevel);
+  app.use("/api/vnpay", routeVnpay);
 };

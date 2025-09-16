@@ -61,7 +61,7 @@ const getJobs = async (req, res) => {
       .populate("company_id")
       .populate("category_id");
 
-    console.log(job);
+    // console.log(job);
 
     // Lấy tổng số lượng job (công ty phải active)
     const total = await Jobs.countDocuments({
@@ -273,7 +273,7 @@ const normalizeSalaryFields = async (req, res) => {
 const deleteJobs = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("req params : ", id);
+    // console.log("req params : ", id);
     if (!id) {
       req.flash("error", "Không có id");
     }

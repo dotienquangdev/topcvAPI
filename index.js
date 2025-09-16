@@ -17,6 +17,8 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const allowedOrigins = ["http://localhost:3002"];
+
 // Cấu hình session & flash
 app.use(
   session({
@@ -25,6 +27,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+
 app.use(flash());
 // Middleware gán flash message vào res.locals
 app.use((req, res, next) => {
@@ -32,9 +35,10 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
+
 // Kết nối database
 database.connect();
-const allowedOrigins = ["http://localhost:3002"];
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -47,6 +51,7 @@ app.use(
     credentials: true,
   })
 );
+
 // Cho phép truy cập folder uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

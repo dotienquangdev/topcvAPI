@@ -22,7 +22,7 @@ const getCompanies = async (req, res) => {
 };
 
 const applyCompanies = async (req, res) => {
-  console.log("BODY:", req.body); // <--- THÊM DÒNG NÀY
+  // console.log("BODY:", req.body); // <--- THÊM DÒNG NÀY
   const exitName = await Companies.findOne({
     name: req.body.name,
   });
@@ -52,7 +52,7 @@ const applyCompanies = async (req, res) => {
 const listJobsCompanies = async (req, res) => {
   try {
     const companyId = req.params.id;
-    console.log("companyId: ", companyId);
+    // console.log("companyId: ", companyId);
 
     if (!companyId) {
       return res.status(400).json({
@@ -120,7 +120,7 @@ const updateCompanies = async (req, res) => {
 const deleteCompanies = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("req params : ", id);
+    // console.log("req params : ", id);
     if (!id) {
       req.flash("error", "Không có id");
     }

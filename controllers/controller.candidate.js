@@ -28,7 +28,7 @@ const putCandidate = async (req, res) => {
 const listCandidate = async (req, res) => {
   try {
     const candidateId = req.body._id;
-    console.log(candidate);
+    // console.log(candidate);
     if (!candidate) {
       return res.status(400).json({
         success: false,
@@ -73,7 +73,7 @@ const applyCandidate = async (req, res) => {
 const deleteCandidate = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("req params: ", id);
+    // console.log("req params: ", id);
     const updated = await Candidate.updateOne(
       { _id: id },
       {

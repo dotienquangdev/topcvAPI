@@ -11,7 +11,7 @@ const getCategories = async (req, res) => {
 const listCategories = async (req, res) => {
   try {
     const categoriesId = req.body._id;
-    console.log(categoriesId);
+    // console.log(categoriesId);
     if (!categoriesId) {
       return res.status(400).json({
         success: false,
@@ -60,7 +60,7 @@ const postCategories = async (req, res) => {
 const deleteCategories = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("req.params 123 :", req.params.id);
+    // console.log("req.params 123 :", req.params.id);
     if (!id) {
       req.flash("error", "Không có id ");
     }

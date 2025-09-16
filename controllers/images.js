@@ -4,7 +4,7 @@ const uploadImages = async (req, res) => {
     const uploadImages = [];
     for (let image of images) {
       const results = await cloudinary.uploader.upload(image);
-      console.log(results);
+      // console.log(results);
       uploadImages.push({
         url: results.secure_url,
         publicId: results.public_id,

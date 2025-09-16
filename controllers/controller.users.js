@@ -101,7 +101,7 @@ const postLogin = async (req, res) => {
 const deleteLogin = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("req.params 123 :", req.params.id);
+    // console.log("req.params 123 :", req.params.id);
     if (!id) {
       req.flash("error", "Không có id ");
     }
