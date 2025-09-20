@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const jobViewsSchema = new mongoose.Schema({
   job_id: String, // ID công việc
   ip_address: String,
+  user_id: String, // ID người dùng (nếu có)
   viewed_at: Date,
   status: {
     type: String,

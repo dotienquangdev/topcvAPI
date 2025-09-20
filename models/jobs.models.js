@@ -12,22 +12,37 @@ const jobsSchema = new mongoose.Schema({
     ref: "JobCategories",
     required: true,
   },
-  formWork_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Formwork", // ✅ trùng với model Formwork
-    required: true,
-  },
-  workExperience_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "WorkExperience", // ✅ trùng với model WorkExperience
-    required: true,
-  },
-  experience_level_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ExperienceLevel", // ✅ trùng với model ExperienceLevel
-    required: true,
-  },
 
+  // ✅ Thay vì ref, ta nhúng trực tiếp formWork
+  formWork: {
+    formWorkName: {
+      type: String,
+      enum: ["Toàn thời gian", "Bán thời gian"],
+      default: "Toàn thời gian",
+    },
+    formWorkSlug: {
+      type: String,
+      enum: ["full-time", "part-time"],
+      default: "full-time",
+    },
+  },
+  // ✅ Thay vì ref, ta nhúng trực tiếp formWork
+  experience_level: {
+    experienceName: {
+      type: String,
+      enum: ["Giám độc", "Trưởng phòng", "Nhân viên", "Thực tập sinh"],
+      default: "Nhân viên",
+    },
+    experienceLabel: {
+      type: String,
+      enum: ["full-time", "part-time", "internship", "Remote"],
+      default: "full-time",
+    },
+  },
+  workExperience: {
+    years: Number,
+    label: String,
+  },
   title: String, // tiêu đề công việc
   description: String, // mô tả công việc
   requirements: String, // yêu cầu công việc
