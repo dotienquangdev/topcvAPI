@@ -12,7 +12,6 @@ const jobsSchema = new mongoose.Schema({
     ref: "JobCategories",
     required: true,
   },
-
   // ✅ Thay vì ref, ta nhúng trực tiếp formWork
   formWork: {
     formWorkName: {
@@ -46,7 +45,6 @@ const jobsSchema = new mongoose.Schema({
   title: String, // tiêu đề công việc
   description: String, // mô tả công việc
   requirements: String, // yêu cầu công việc
-  benefits: String, // lợi ích công việc
   salary_min: Number, // lương tối thiểu
   salary_max: Number, // lương tối đa
   location: String, // địa điểm làm việc

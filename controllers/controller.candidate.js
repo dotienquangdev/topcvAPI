@@ -10,7 +10,6 @@ const getCandidate = async (req, res) => {
 };
 const putCandidate = async (req, res) => {
   const id = req.params.id;
-
   try {
     await Candidate.updateOne(
       { _id: id },

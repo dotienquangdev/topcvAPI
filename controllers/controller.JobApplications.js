@@ -64,15 +64,6 @@ const listJobApplication = async (req, res) => {
         populate: [
           { path: "company_id", match: { deleted: false, status: "active" } },
           { path: "category_id", match: { deleted: false, status: "active" } },
-          { path: "formWork_id", match: { deleted: false, status: "active" } },
-          {
-            path: "workExperience_id",
-            match: { deleted: false, status: "active" },
-          },
-          {
-            path: "experience_level_id",
-            match: { deleted: false, status: "active" },
-          },
         ],
       })
       .populate("resume_id");

@@ -1,5 +1,4 @@
 const Jobs = require("../models/jobs.models");
-const Formwork = require("../models/form_work.models");
 const mongoose = require("mongoose");
 
 const getJobs = async (req, res) => {
@@ -38,28 +37,12 @@ const getJobs = async (req, res) => {
           status: "active",
         },
       })
-      .populate({
-        path: "formWork_id",
-        match: { deleted: false, status: "active" },
-      })
-      .populate({
-        path: "workExperience_id",
-        match: { deleted: false, status: "active" },
-      })
-      .populate({
-        path: "experience_level_id",
-        match: { deleted: false, status: "active" },
-      })
       .sort({ [_sort]: sortOrder })
       .skip(skip)
       .limit(limit);
 
     // Lọc bỏ job không có company hợp lệ
     jobs = jobs.filter((job) => job.company_id);
-    const job = await Jobs.findOne({ _id: "68c1b2cfeed717b51ee90b09" })
-      .populate("formWork_id") // <- populate formWork
-      .populate("company_id")
-      .populate("category_id");
 
     // console.log(job);
 
@@ -96,10 +79,7 @@ const listJobs = async (req, res) => {
     }
     const jobs = await Jobs.findById(jobsId)
       .populate("company_id")
-      .populate("category_id")
-      .populate("formWork_id")
-      .populate("workExperience_id")
-      .populate("experience_level_id");
+      .populate("category_id");
     if (!jobs) {
       return res.status(404).json({
         success: false,
@@ -125,9 +105,9 @@ const postJobsApply = async (req, res) => {
       requirements,
       salary_min,
       salary_max,
-      formWork_id,
-      workExperience_id,
-      experience_level_id,
+      formWork,
+      workExperience,
+      experience_level,
       location,
       company_id,
       category_id,
@@ -143,9 +123,9 @@ const postJobsApply = async (req, res) => {
       !requirements?.trim() ||
       salary_min === undefined ||
       salary_max === undefined ||
-      !formWork_id ||
-      !workExperience_id ||
-      !experience_level_id ||
+      !formWork ||
+      !workExperience ||
+      !experience_level ||
       !location?.trim() ||
       !company_id ||
       !category_id ||
@@ -173,11 +153,11 @@ const postJobsApply = async (req, res) => {
     const existingJob = await Jobs.findOne({
       title,
       company_id,
-      location,
-      formWork_id,
-      workExperience_id,
-      experience_level_id,
       category_id,
+      location,
+      formWork,
+      workExperience,
+      experience_level,
       salary_min,
       salary_max,
     });
@@ -195,9 +175,9 @@ const postJobsApply = async (req, res) => {
       requirements,
       salary_min: parseInt(salary_min),
       salary_max: parseInt(salary_max),
-      formWork_id,
-      workExperience_id,
-      experience_level_id,
+      formWork,
+      workExperience,
+      experience_level,
       location,
       company_id,
       category_id,
@@ -222,9 +202,9 @@ const postJobsApply = async (req, res) => {
         requirements: newJob.requirements,
         salary_min: newJob.salary_min,
         salary_max: newJob.salary_max,
-        formWork_id: newJob.formWork_id,
-        workExperience_id: newJob.workExperience_id,
-        experience_level_id: newJob.experience_level_id,
+        formWork: newJob.formWork,
+        workExperience: newJob.workExperience,
+        experience_level: newJob.experience_level,
         location: newJob.location,
         company_id: newJob.company_id,
         category_id: newJob.category_id,

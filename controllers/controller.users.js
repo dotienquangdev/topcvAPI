@@ -22,8 +22,6 @@ const register = async (req, res) => {
       .status(400)
       .json({ success: false, message: "Email không được để trống!" });
   }
-  // console.log("exitPhone:", req.body.phone);
-  // console.log("exitEmail:", req.body.email);
   if (exitEmail) {
     return res
       .status(400)
